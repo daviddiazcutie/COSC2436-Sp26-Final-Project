@@ -1,0 +1,245 @@
+# Python Ch 2 Code Files
+
+### search.py
+
+```python
+
+import  time
+
+from  typing  import  List, Dict, Optional
+
+def  linear_search(books: List[Dict], target_isbn: str) -> Optional[Dict]:
+
+  """
+
+ Perform linear search on books list to find a book by ISBN
+
+ Args:
+
+ books: List of book dictionaries
+
+ target_isbn: ISBN to search for
+
+ Returns:
+
+ Book dictionary if found, None otherwise
+
+ """
+
+  start_time  =  time.time()
+
+  for  book  in  books:
+
+  if  str(book['isbn'])  ==  target_isbn:
+
+  end_time  =  time.time()
+
+  print(f"Linear Search Time: {(end_time  -  start_time)*1000:.2f} ms")
+
+  return  book
+
+  end_time  =  time.time()
+
+  print(f"Linear Search Time: {(end_time  -  start_time)*1000:.2f} ms")
+
+  return  None
+
+def  binary_search(books: List[Dict], target_isbn: str) -> Optional[Dict]:
+
+  """
+
+ Perform binary search on sorted books list to find a book by ISBN
+
+ Args:
+
+ books: List of book dictionaries (must be sorted by ISBN)
+
+ target_isbn: ISBN to search for
+
+ Returns:
+
+ Book dictionary if found, None otherwise
+
+ """
+
+  start_time  =  time.time()
+
+  left  =  0
+
+  right  =  len(books)  -  1
+
+  while  left  <=  right:
+
+  mid  =  (left  +  right)  //  2
+
+  current_isbn  =  str(books[mid]['isbn'])
+
+  if  current_isbn  ==  target_isbn:
+
+  end_time  =  time.time()
+
+  print(f"Binary Search Time: {(end_time  -  start_time)*1000:.2f} ms")
+
+  return  books[mid]
+
+  elif  current_isbn  <  target_isbn:
+
+  left  =  mid  +  1
+
+  else:
+
+  right  =  mid  -  1
+
+  end_time  =  time.time()
+
+  print(f"Binary Search Time: {(end_time  -  start_time)*1000:.2f} ms")
+
+  return  None
+```
+
+### main.py
+
+```python
+import  json
+
+import  time
+
+from  search_algorithms  import  binary_search
+
+from  sort_algorithms  import  selection_sort
+
+def  load_books(filename):
+
+  with  open(filename, 'r')  as  file:
+
+  books  =  json.load(file)
+
+  # Ensure all books have a rating, defaulting to 0 if not provided
+
+  for  book  in  books:
+
+  if  'rating'  not  in  book:
+
+  book['rating']  =  0.0
+
+  return  books
+
+def  display_books(books, count):
+
+  for  i  in  range(min(count, len(books))):
+
+  print(f"{books[i]['title']} (Rating: {books[i]['rating']})")
+
+def  main():
+
+  # Load dataset
+
+  books  =  load_books('data/books.json')
+
+  # Extract sorted titles for binary search
+
+  sorted_titles  =  [book['title']  for  book  in  books]
+
+  # Binary search prompt
+
+  print("\n---- Chapter 1: Binary Search ----")
+
+  book_to_search  =  input("Enter the title of the book you want to search for: ")
+
+  # Measure the time taken for the search
+
+  start_search_time  =  time.time()
+
+  index  =  binary_search(sorted_titles, book_to_search)
+
+  end_search_time  =  time.time()
+
+  search_time_taken  =  end_search_time  -  start_search_time
+
+  if  index  !=  -1:
+
+  print(f"Book '{book_to_search}' found at index {index}.")
+
+  else:
+
+  print(f"Book '{book_to_search}' not found.")
+
+  print(f"Search took {search_time_taken:.6f} seconds.")
+
+  # Display first 20 books before sorting by rating
+
+  print("\n---- Displaying the first 20 books before sorting ----")
+
+  display_books(books, 20)
+
+  # Sort books by rating using selection sort
+
+  print("\n---- Chapter 2: Selection Sort by Rating ----")
+
+  start_sort_time  =  time.time()
+
+  selection_sort(books)
+
+  end_sort_time  =  time.time()
+
+  sort_time_taken  =  end_sort_time  -  start_sort_time
+
+  print("Books sorted by rating using selection sort.")
+
+  print(f"Sorting took {sort_time_taken:.6f} seconds.")
+
+  # Display first 20 books after sorting by rating
+
+  print("\n---- Displaying the first 20 books after sorting ----")
+
+  display_books(books, 20)
+
+if  __name__  ==  "__main__":
+
+  main()
+```
+### sort_algorithms.py
+
+```python
+def  selection_sort(books):
+
+  n  =  len(books)
+
+  for  i  in  range(n  -  1):
+
+  min_idx  =  i
+
+  for  j  in  range(i  +  1, n):
+
+  if  books[j]['rating']  <  books[min_idx]['rating']:
+
+  min_idx  =  j
+
+  books[i], books[min_idx]  =  books[min_idx], books[i]
+```
+### search_algorithms.py
+
+```python
+
+def  binary_search(arr, target):
+
+  left, right  =  0, len(arr)  -  1
+
+  while  left  <=  right:
+
+  mid  =  (left  +  right)  //  2
+
+  if  arr[mid]  ==  target:
+
+  return  mid
+
+  elif  arr[mid]  <  target:
+
+  left  =  mid  +  1
+
+  else:
+
+  right  =  mid  -  1
+
+  return  -1
+```
