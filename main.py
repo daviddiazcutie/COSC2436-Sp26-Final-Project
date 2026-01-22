@@ -13,7 +13,7 @@ def main():
         print("Error: Invalid JSON format in books.json!")
         return
     
-    test_isbn = "9780060809249" # Known to exist
+    test_isbn = "9781593081072" # Known to exist
  
     # Perform linear search
     print("\nPerforming Linear Search...")
