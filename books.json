@@ -1,5 +1,7 @@
-books = [
-{"title": "Book A", "rating": 2.5},
-{"title": "Book B", "rating": 3.6},
-{"title": "Book C", "rating": 1.8}
+[
+  {"isbn": "1111", "title": "Book A", "rating": 2.5},
+  {"isbn": "1234", "title": "Book B", "rating": 3.6},
+  {"isbn": "1345", "title": "Book C", "rating": 1.8},
+  {"isbn": "9780060809249", "title": "Brave New World", "rating": 4.1},
+  {"isbn": "9781593081072", "title": "The Phantom of the Opera", "rating": 4.5}
 ]
