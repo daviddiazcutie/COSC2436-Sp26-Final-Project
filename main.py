@@ -33,7 +33,7 @@ def main():
 
     # 3. Test first and last books
     print("\n--- Test 3: First and Last Books ---")
-    # Get first ISBN (alphabetically/numerically lowest in this case)
+    # Get first ISBN
     first_isbn = str(min(book['isbn'] for book in books))
     print(f"Searching for first ISBN: {first_isbn}")
     result = linear_search(books, first_isbn)
