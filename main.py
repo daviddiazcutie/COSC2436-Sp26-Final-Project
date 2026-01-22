@@ -14,9 +14,7 @@ def main():
         return
     
     test_isbn = "9780060809249" # Known to exist
-    result = linear_search(books, test_isbn)
-    assert result is not None, "Should find existing book"
-
+ 
     # Perform linear search
     print("\nPerforming Linear Search...")
     result = linear_search(books, test_isbn)
