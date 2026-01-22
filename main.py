@@ -1,64 +1,79 @@
 import json
+import time
 from search import linear_search, binary_search
+from sort_algorithms import selection_sort
 
+def load_books(filename):
+    try:
+        with open(filename, 'r') as file:
+            books = json.load(file)
+        for book in books:
+            if 'rating' not in book:
+                book['rating'] = 0.0
+        return books
+    except FileNotFoundError:
+        print(f"Error: {filename} not found!")
+        return []
+    except json.JSONDecodeError:
+        print(f"Error: Invalid JSON format in {filename}!")
+        return []
+
+def display_books(books, count):
+    for i in range(min(count, len(books))):
+        print(f"{books[i]['title']} (Rating: {books[i]['rating']})")
 
 def main():
-    # Load books data
-    try:
-        with open('books.json', 'r') as file:
-            books = json.load(file)
-    except FileNotFoundError:
-        print("Error: books.json file not found!")
+    # Load dataset
+    # Prioritize 'books.json' if it exists, otherwise use 'data/books.json'
+    filename = 'books.json'
+    books = load_books(filename)
+    if not books:
+        books = load_books('data/books.json')
+    
+    if not books:
+        print("No books loaded. Exiting.")
         return
-    except json.JSONDecodeError:
-        print("Error: Invalid JSON format in books.json!")
-        return
 
-    print(f"Total books loaded: {len(books)}")
-
-    # 1. Test existing book
-    print("\n--- Test 1: Existing Book ---")
-    test_isbn = "9780060809249"  # Known to exist
-    print(f"Searching for ISBN: {test_isbn}")
-    result = linear_search(books, test_isbn)
-    assert result is not None, "Should find existing book"
-    print(f"Found: {result['title']}")
-
-    # 2. Test non-existent book
-    print("\n--- Test 2: Non-existent Book ---")
-    test_isbn = "0000000000000"  # Known not to exist
-    print(f"Searching for ISBN: {test_isbn}")
-    result = linear_search(books, test_isbn)
-    assert result is None, "Should return None for non-existent book"
-    print("Correctly identified as not found")
-
-    # 3. Test first and last books
-    print("\n--- Test 3: First Book ---")
-    # Get first ISBN
-    first_isbn = str(min(book['isbn'] for book in books))
-    print(f"Searching for first ISBN: {first_isbn}")
-    result = linear_search(books, first_isbn)
-    assert result is not None, "Should find first book"
-    print(f"Found first book: {result['title']}")
-
-    # Get last ISBN
-    last_isbn = str(max(book['isbn'] for book in books))
-    print(f"Searching for last ISBN: {last_isbn}")
-    result = linear_search(books, last_isbn)
-    assert result is not None, "Should find last book"
-    print(f"Found last book: {result['title']}")
-
-    # Final check with Binary Search
-    print("\n--- Final Check: Binary Search ---")
-    books.sort(key=lambda x: str(x['isbn']))
-    test_isbn = "9780060809249"
-    print(f"Binary searching for ISBN: {test_isbn}")
-    result = binary_search(books, test_isbn)
-    if result:
-        print(f"Found: {result['title']}")
+    # Extract sorted titles for binary search
+    sorted_titles = sorted([book['title'] for book in books])
+    
+    # Binary search prompt
+    print("\n---- Chapter 1: Binary Search ----")
+    book_to_search = input("Enter the title of the book you want to search for: ")
+    
+    # Measure the time taken for the search
+    start_search_time = time.time()
+    # Note: search.py binary_search expects (books, target_isbn) 
+    # but here it's used on titles. This might need matching search.py logic.
+    # For now, following the structure provided in main.py.
+    index = binary_search([{'isbn': t, 'title': t} for t in sorted_titles], book_to_search)
+    end_search_time = time.time()
+    
+    search_time_taken = end_search_time - start_search_time
+    
+    if index:
+        print(f"Book '{book_to_search}' found.")
     else:
-        print("Book not found")
+        print(f"Book '{book_to_search}' not found.")
+    print(f"Search took {search_time_taken:.6f} seconds.")
 
+    # Display first 20 books before sorting by rating
+    print("\n---- Displaying the first 20 books before sorting ----")
+    display_books(books, 20)
+
+    # Sort books by rating using selection sort
+    print("\n---- Chapter 2: Selection Sort by Rating ----")
+    start_sort_time = time.time()
+    selection_sort(books)
+    end_sort_time = time.time()
+    
+    sort_time_taken = end_sort_time - start_sort_time
+    print("Books sorted by rating using selection sort.")
+    print(f"Sorting took {sort_time_taken:.6f} seconds.")
+
+    # Display first 20 books after sorting by rating
+    print("\n---- Displaying the first 20 books after sorting ----")
+    display_books(books, 20)
 
 if __name__ == "__main__":
     main()
