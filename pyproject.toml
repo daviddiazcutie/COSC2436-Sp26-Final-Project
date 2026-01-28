@@ -1,9 +1,0 @@
-[project]
-name = "python-template"
-version = "0.1.0"
-description = ""
-authors = ["David <ddiazcutie@my.lonestar.edu>"]]
-requires-python = ">=3.11"
-dependencies = [
-    "numpy==2.1.3",
-]
